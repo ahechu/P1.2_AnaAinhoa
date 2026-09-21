@@ -2,14 +2,15 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Mi página</title>
+        <title>PelisToday</title>
         <link rel="stylesheet" href="estilo.css">
-	    <script src="script.js" defer></script>
+        <script src="script.js" defer></script>
     </head>
     <body>
-        <p>Esta es la primera línea de texto.</p>
-        <p>Esta es la segunda línea de texto.</p>
-        <input type="text" name="texto" aria-label="Campo de texto">
-        <button type="button">Enviar</button>
+        <h1>PelisToday</h1>
+        <label for="titulo" style="text-align: center;">Título de la película:</label>
+        <input type="text" name="titulo" id="titulo">
+        <button type="button" id="buscar">Enviar</button>
+        <div id="resultado"></div>
     </body>
 </html>

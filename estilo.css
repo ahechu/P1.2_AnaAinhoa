@@ -10,10 +10,20 @@ h1 {
 }
 
 button {
-	background-color: #8b0000;
-	color: #ffff00;
+	background-color: #df6666;
+	color: #eded85;
 	border: none;
 	border-radius: 6px;
 	padding: 0.6rem 1.2rem;
 	cursor: pointer;
 }
+
+label {
+	color: #5f9cd5;
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+	font-size: 1.5rem
+}
+
