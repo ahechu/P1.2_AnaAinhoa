@@ -1,0 +1,14 @@
+{"peliculas" : [
+    {"id": 1,
+    "nombre": "Titanic",
+    "ano": 1997,
+    "actores": ["Leonardo DiCaprio", "Kate Winslet", "Billy Zane"]},
+    {"id": 2,
+    "nombre": "Inception",
+    "ano": 2010,
+    "actores": ["Leonardo DiCaprio", "Marion Cotillard", "Tom Hardy"]},
+    {"id": 3,
+    "nombre": "The Matrix",
+    "ano": 1999,
+    "actores": ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"]}]
+}
