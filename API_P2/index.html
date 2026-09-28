@@ -1,16 +1,311 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>PelisToday2</title>
-        <link rel="stylesheet" href="estilo.css">
-        <script src="script.js" defer></script>
-    </head>
-    <body>
-        <h1>PelisToday2</h1>
-        <label for="titulo" style="text-align: center;">Título de la película:</label>
-        <input type="text" name="titulo" id="titulo">
-        <button type="button" id="buscar">Enviar</button>
-        <div id="resultado"></div>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>PelisToday2</title>
+    <link rel="stylesheet" href="estilo.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <h1>PelisToday2</h1>
+
+    <!-- ========================================== -->
+    <!-- BUSCAR PELÍCULA -->
+    <!-- ========================================== -->
+
+    <h2>Buscar película</h2>
+
+    <label for="buscarNombre">Título de la película:</label>
+
+    <input
+        type="text"
+        id="buscarNombre"
+        placeholder="Ejemplo: Titanic"
+    >
+
+    <button type="button" id="buscarPelicula">
+        Buscar
+    </button>
+
+
+    <!-- Aquí mostraremos el resultado de la búsqueda -->
+    <div id="resultado"></div>
+
+
+
+    <hr>
+
+
+
+    <!-- ========================================== -->
+    <!-- CREAR PELÍCULA -->
+    <!-- ========================================== -->
+
+    <h2>Crear película</h2>
+
+    <label for="peliculaId">ID:</label>
+
+    <input
+        type="number"
+        id="peliculaId"
+        placeholder="Ejemplo: 1"
+    >
+
+
+    <label for="peliculaNombre">Nombre:</label>
+
+    <input
+        type="text"
+        id="peliculaNombre"
+        placeholder="Ejemplo: Titanic"
+    >
+
+
+    <label for="peliculaAno">Año de publicación:</label>
+
+    <input
+        type="number"
+        id="peliculaAno"
+        placeholder="Ejemplo: 1997"
+    >
+
+
+    <label for="peliculaActores">IDs de los actores:</label>
+
+    <input
+        type="text"
+        id="peliculaActores"
+        placeholder="Ejemplo: 1,2,3"
+    >
+
+
+    <button type="button" id="crearPelicula">
+        Crear película
+    </button>
+
+
+
+    <hr>
+
+
+
+    <!-- ========================================== -->
+    <!-- MODIFICAR PELÍCULA -->
+    <!-- ========================================== -->
+
+    <h2>Modificar película</h2>
+
+
+    <!-- El ID sirve para indicar qué película queremos modificar -->
+    <label for="modificarPeliculaId">
+        ID de la película:
+    </label>
+
+    <input
+        type="number"
+        id="modificarPeliculaId"
+        placeholder="Ejemplo: 1"
+    >
+
+
+    <!-- Los siguientes campos son los nuevos valores -->
+
+    <label for="modificarPeliculaNombre">
+        Nuevo nombre:
+    </label>
+
+    <input
+        type="text"
+        id="modificarPeliculaNombre"
+        placeholder="Nuevo nombre"
+    >
+
+
+    <label for="modificarPeliculaAno">
+        Nuevo año:
+    </label>
+
+    <input
+        type="number"
+        id="modificarPeliculaAno"
+        placeholder="Nuevo año"
+    >
+
+
+    <label for="modificarPeliculaActores">
+        Nuevos actores:
+    </label>
+
+    <input
+        type="text"
+        id="modificarPeliculaActores"
+        placeholder="Ejemplo: 1,2,4"
+    >
+
+
+    <button type="button" id="modificarPelicula">
+        Modificar película
+    </button>
+
+
+
+    <hr>
+
+
+
+    <!-- ========================================== -->
+    <!-- BORRAR PELÍCULA -->
+    <!-- ========================================== -->
+
+    <h2>Borrar película</h2>
+
+    <label for="borrarPeliculaId">
+        ID de la película:
+    </label>
+
+    <input
+        type="number"
+        id="borrarPeliculaId"
+        placeholder="Ejemplo: 1"
+    >
+
+
+    <button type="button" id="borrarPelicula">
+        Borrar película
+    </button>
+
+
+
+    <hr>
+
+
+
+    <!-- ========================================== -->
+    <!-- CREAR ACTOR -->
+    <!-- ========================================== -->
+
+    <h2>Crear actor</h2>
+
+
+    <label for="actorId">ID:</label>
+
+    <input
+        type="number"
+        id="actorId"
+        placeholder="Ejemplo: 1"
+    >
+
+
+    <label for="actorNombre">
+        Nombre completo:
+    </label>
+
+    <input
+        type="text"
+        id="actorNombre"
+        placeholder="Ejemplo: Leonardo DiCaprio"
+    >
+
+
+    <label for="actorAno">
+        Año de nacimiento:
+    </label>
+
+    <input
+        type="number"
+        id="actorAno"
+        placeholder="Ejemplo: 1974"
+    >
+
+
+    <button type="button" id="crearActor">
+        Crear actor
+    </button>
+
+
+
+    <hr>
+
+
+
+    <!-- ========================================== -->
+    <!-- MODIFICAR ACTOR -->
+    <!-- ========================================== -->
+
+    <h2>Modificar actor</h2>
+
+
+    <!-- ID del actor que queremos modificar -->
+    <label for="modificarActorId">
+        ID del actor:
+    </label>
+
+    <input
+        type="number"
+        id="modificarActorId"
+        placeholder="Ejemplo: 1"
+    >
+
+
+    <label for="modificarActorNombre">
+        Nuevo nombre:
+    </label>
+
+    <input
+        type="text"
+        id="modificarActorNombre"
+        placeholder="Nuevo nombre"
+    >
+
+
+    <label for="modificarActorAno">
+        Nuevo año de nacimiento:
+    </label>
+
+    <input
+        type="number"
+        id="modificarActorAno"
+        placeholder="Nuevo año"
+    >
+
+
+    <button type="button" id="modificarActor">
+        Modificar actor
+    </button>
+
+
+
+    <hr>
+
+
+
+    <!-- ========================================== -->
+    <!-- BORRAR ACTOR -->
+    <!-- ========================================== -->
+
+    <h2>Borrar actor</h2>
+
+    <label for="borrarActorId">
+        ID del actor:
+    </label>
+
+    <input
+        type="number"
+        id="borrarActorId"
+        placeholder="Ejemplo: 1"
+    >
+
+
+    <button type="button" id="borrarActor">
+        Borrar actor
+    </button>
+
+
+    <!-- Aquí podemos mostrar mensajes de las operaciones -->
+    <div id="mensaje"></div>
+
+
+</body>
+
 </html>

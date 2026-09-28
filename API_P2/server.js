@@ -1,245 +1,475 @@
-const express = require("express");
-const fs = require("fs");
+// Dirección donde está funcionando nuestra API
+const API = "http://localhost:3000";
 
-const app = express();
-app.use(express.json());
 
-// Leer y guardar listas en archivos JSON.
-function leer(archivo) {
-    const texto = fs.readFileSync(__dirname + "/" + archivo, "utf8");
-    return JSON.parse(texto);
-}
+// ==================================================
+// BUSCAR UNA PELÍCULA POR NOMBRE
+// GET /peliculas?nombre=Titanic
+// ==================================================
 
-function guardar(archivo, lista) {
-    fs.writeFileSync(__dirname + "/" + archivo, JSON.stringify(lista, null, 2));
-}
+document.getElementById("buscarPelicula").addEventListener("click", async function () {
 
-// Buscar la posición de un elemento. -1 significa que no existe.
-function buscar(lista, id) {
-    for (let i = 0; i < lista.length; i++) {
-        if (lista[i].id === id) {
-            return i;
+    // Cogemos el nombre escrito en el input
+    const nombre = document.getElementById("buscarNombre").value;
+
+    // Lugar donde vamos a mostrar el resultado
+    const resultado = document.getElementById("resultado");
+
+
+    // Comprobamos que el usuario haya escrito algo
+    if (nombre === "") {
+        resultado.innerHTML = "Escribe el nombre de una película";
+        return;
+    }
+
+
+    try {
+
+        // Hacemos la petición GET a nuestra API
+        const respuesta = await fetch(
+            API + "/peliculas?nombre=" + encodeURIComponent(nombre)
+        );
+
+
+        // Si la respuesta es correcta
+        if (respuesta.ok) {
+
+            // Convertimos la respuesta JSON a Javascript
+            const pelicula = await respuesta.json();
+
+
+            // Mostramos los datos de la película
+            resultado.innerHTML =
+                "<h3>" + pelicula.nombre + "</h3>" +
+                "<p>ID: " + pelicula.id + "</p>" +
+                "<p>Año: " + pelicula.anoPublicacion + "</p>" +
+                "<p>Actores: " + pelicula.actores.join(", ") + "</p>";
+
+        } else {
+
+            // Si la película no existe, la API nos devuelve un texto
+            const error = await respuesta.text();
+
+            resultado.innerHTML = error;
         }
-    }
-    return -1;
-}
 
-// Crear un ID que no esté utilizado en esta lista.
-function nuevoId(lista) {
-    let id = 1;
-    for (let i = 0; i < lista.length; i++) {
-        if (lista[i].id >= id) {
-            id = lista[i].id + 1;
-        }
-    }
-    return id;
-}
+    } catch (error) {
 
-function nombreYAnioValidos(nombre, anio) {
-    return typeof nombre === "string" && nombre.trim() !== "" &&
-           Number.isInteger(anio) && anio > 0;
-}
+        resultado.innerHTML = "Error al conectar con la API";
 
-function peliculaValida(datos) {
-    if (!datos || !nombreYAnioValidos(datos.nombre, datos.anio)) {
-        return false;
+        console.log(error);
     }
-    if (!Array.isArray(datos.actores)) {
-        return false;
-    }
-    const actores = leer("actores.json");
-    for (let i = 0; i < datos.actores.length; i++) {
-        if (buscar(actores, datos.actores[i]) === -1) {
-            return false;
-        }
-        if (datos.actores.indexOf(datos.actores[i]) !== i) {
-            return false;
-        }
-    }
-    return true;
-}
 
-function actorValido(datos) {
-    if (!datos) {
-        return false;
-    }
-    return nombreYAnioValidos(datos.nombreCompleto, datos.anioNacimiento);
-}
-
-app.get("/", function (req, res) {
-    res.json({ mensaje: "API de películas y actores", rutas: ["/peliculas", "/actores"] });
 });
 
-// PELÍCULAS: GET, POST, DELETE y PUT.
 
-// GET /peliculas o GET /peliculas?nombre=matrix
-app.get("/peliculas", function (req, res) {
-    const peliculas = leer("peliculas.json");
-    let nombre = "";
-    if (req.query.nombre !== undefined) {
-        nombre = String(req.query.nombre).toLowerCase();
-    }
-    const resultados = [];
-    for (let i = 0; i < peliculas.length; i++) {
-        if (peliculas[i].nombre.toLowerCase().includes(nombre)) {
-            resultados.push(peliculas[i]);
-        }
-    }
-    res.json(resultados);
-});
 
-// GET /peliculas/1
-app.get("/peliculas/:id", function (req, res) {
-    const peliculas = leer("peliculas.json");
-    const posicion = buscar(peliculas, Number(req.params.id));
-    if (posicion === -1) {
-        return res.status(404).json({ error: "Película no encontrada." });
-    }
-    res.json(peliculas[posicion]);
-});
+// ==================================================
+// CREAR UNA PELÍCULA
+// POST /peliculas
+// ==================================================
 
-// POST /peliculas: crear una película.
-app.post("/peliculas", function (req, res) {
-    if (!peliculaValida(req.body)) {
-        return res.status(400).json({ error: "Envía nombre, año entero positivo y actores como una lista de IDs existentes sin repetir." });
+document.getElementById("crearPelicula").addEventListener("click", async function () {
+
+    // Cogemos los valores escritos en los inputs
+    const id = document.getElementById("peliculaId").value;
+    const nombre = document.getElementById("peliculaNombre").value;
+    const ano = document.getElementById("peliculaAno").value;
+
+    // Los actores se escriben así:
+    // 1,2,3
+    const textoActores = document.getElementById("peliculaActores").value;
+
+
+    // Creamos inicialmente un array vacío
+    let actores = [];
+
+
+    // Si se han escrito actores, los separamos por las comas
+    if (textoActores !== "") {
+
+        actores = textoActores.split(",");
+
+        // Convertimos cada ID de texto a número
+        actores = actores.map(function (actor) {
+            return Number(actor.trim());
+        });
     }
-    const peliculas = leer("peliculas.json");
+
+
+    // Creamos el objeto que enviaremos a la API
     const pelicula = {
-        id: nuevoId(peliculas),
-        nombre: req.body.nombre.trim(),
-        anio: req.body.anio,
-        actores: req.body.actores
+        id: Number(id),
+        nombre: nombre,
+        anoPublicacion: Number(ano),
+        actores: actores
     };
-    peliculas.push(pelicula);
-    guardar("peliculas.json", peliculas);
-    res.status(201).json(pelicula);
-});
 
-// DELETE /peliculas/1: borrar una película.
-app.delete("/peliculas/:id", function (req, res) {
-    const peliculas = leer("peliculas.json");
-    const posicion = buscar(peliculas, Number(req.params.id));
-    if (posicion === -1) {
-        return res.status(404).json({ error: "Película no encontrada." });
-    }
-    peliculas.splice(posicion, 1);
-    guardar("peliculas.json", peliculas);
-    res.json({ mensaje: "Película borrada." });
-});
 
-// PUT /peliculas/1: enviar todos los campos editables.
-// Para añadir o quitar actores, envía la lista completa de IDs que quieres conservar.
-app.put("/peliculas/:id", function (req, res) {
-    const peliculas = leer("peliculas.json");
-    const posicion = buscar(peliculas, Number(req.params.id));
-    if (posicion === -1) {
-        return res.status(404).json({ error: "Película no encontrada." });
-    }
-    if (!peliculaValida(req.body)) {
-        return res.status(400).json({ error: "Envía nombre, año entero positivo y actores como una lista de IDs existentes sin repetir." });
-    }
-    peliculas[posicion].nombre = req.body.nombre.trim();
-    peliculas[posicion].anio = req.body.anio;
-    peliculas[posicion].actores = req.body.actores;
-    guardar("peliculas.json", peliculas);
-    res.json(peliculas[posicion]);
-});
+    try {
 
-// ACTORES: GET, POST, DELETE y PUT.
+        // Hacemos la petición POST
+        const respuesta = await fetch(API + "/peliculas", {
 
-// GET /actores o GET /actores?nombre=ana
-app.get("/actores", function (req, res) {
-    const actores = leer("actores.json");
-    let nombre = "";
-    if (req.query.nombre !== undefined) {
-        nombre = String(req.query.nombre).toLowerCase();
-    }
-    const resultados = [];
-    for (let i = 0; i < actores.length; i++) {
-        if (actores[i].nombreCompleto.toLowerCase().includes(nombre)) {
-            resultados.push(actores[i]);
+            method: "POST",
+
+            // Indicamos que enviamos JSON
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            // Convertimos nuestro objeto Javascript a JSON
+            body: JSON.stringify(pelicula)
+        });
+
+
+        if (respuesta.ok) {
+
+            const datos = await respuesta.json();
+
+            document.getElementById("mensaje").innerHTML =
+                "Película creada correctamente: " + datos.nombre;
+
+        } else {
+
+            const error = await respuesta.text();
+
+            document.getElementById("mensaje").innerHTML = error;
         }
+
+    } catch (error) {
+
+        document.getElementById("mensaje").innerHTML =
+            "Error al conectar con la API";
+
+        console.log(error);
     }
-    res.json(resultados);
+
 });
 
-// GET /actores/1
-app.get("/actores/:id", function (req, res) {
-    const actores = leer("actores.json");
-    const posicion = buscar(actores, Number(req.params.id));
-    if (posicion === -1) {
-        return res.status(404).json({ error: "Actor no encontrado." });
-    }
-    res.json(actores[posicion]);
-});
 
-// POST /actores: crear un actor.
-app.post("/actores", function (req, res) {
-    if (!actorValido(req.body)) {
-        return res.status(400).json({ error: "Envía nombreCompleto y anioNacimiento como un entero positivo." });
-    }
-    const actores = leer("actores.json");
-    const actor = {
-        id: nuevoId(actores),
-        nombreCompleto: req.body.nombreCompleto.trim(),
-        anioNacimiento: req.body.anioNacimiento
-    };
-    actores.push(actor);
-    guardar("actores.json", actores);
-    res.status(201).json(actor);
-});
 
-// DELETE /actores/1: quitar antes sus asociaciones mediante PUT /peliculas/:id.
-app.delete("/actores/:id", function (req, res) {
-    const actores = leer("actores.json");
-    const id = Number(req.params.id);
-    const posicion = buscar(actores, id);
-    if (posicion === -1) {
-        return res.status(404).json({ error: "Actor no encontrado." });
+// ==================================================
+// MODIFICAR UNA PELÍCULA
+// PUT /peliculas/:id
+// ==================================================
+
+document.getElementById("modificarPelicula").addEventListener("click", async function () {
+
+    // ID de la película que queremos modificar
+    const id = document.getElementById("modificarPeliculaId").value;
+
+
+    // Nuevos valores
+    const nombre = document.getElementById("modificarPeliculaNombre").value;
+    const ano = document.getElementById("modificarPeliculaAno").value;
+    const textoActores = document.getElementById("modificarPeliculaActores").value;
+
+
+    // Creamos un objeto vacío
+    const cambios = {};
+
+
+    // Solamente añadimos al objeto los campos
+    // que el usuario haya rellenado
+
+    if (nombre !== "") {
+        cambios.nombre = nombre;
     }
-    const peliculas = leer("peliculas.json");
-    for (let i = 0; i < peliculas.length; i++) {
-        for (let j = 0; j < peliculas[i].actores.length; j++) {
-            if (peliculas[i].actores[j] === id) {
-                return res.status(409).json({ error: "Quita primero este actor de las películas en las que aparece." });
+
+
+    if (ano !== "") {
+        cambios.anoPublicacion = Number(ano);
+    }
+
+
+    if (textoActores !== "") {
+
+        let actores = textoActores.split(",");
+
+        actores = actores.map(function (actor) {
+            return Number(actor.trim());
+        });
+
+        cambios.actores = actores;
+    }
+
+
+    try {
+
+        // Enviamos el PUT indicando el ID en la URL
+        const respuesta = await fetch(
+            API + "/peliculas/" + id,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(cambios)
             }
+        );
+
+
+        if (respuesta.ok) {
+
+            const pelicula = await respuesta.json();
+
+            document.getElementById("mensaje").innerHTML =
+                "Película modificada correctamente: " + pelicula.nombre;
+
+        } else {
+
+            const error = await respuesta.text();
+
+            document.getElementById("mensaje").innerHTML = error;
         }
+
+    } catch (error) {
+
+        document.getElementById("mensaje").innerHTML =
+            "Error al conectar con la API";
+
+        console.log(error);
     }
-    actores.splice(posicion, 1);
-    guardar("actores.json", actores);
-    res.json({ mensaje: "Actor borrado." });
+
 });
 
-// PUT /actores/1: enviar los dos campos editables.
-app.put("/actores/:id", function (req, res) {
-    const actores = leer("actores.json");
-    const posicion = buscar(actores, Number(req.params.id));
-    if (posicion === -1) {
-        return res.status(404).json({ error: "Actor no encontrado." });
+
+
+// ==================================================
+// BORRAR UNA PELÍCULA
+// DELETE /peliculas/:id
+// ==================================================
+
+document.getElementById("borrarPelicula").addEventListener("click", async function () {
+
+    // Cogemos el ID de la película que queremos borrar
+    const id = document.getElementById("borrarPeliculaId").value;
+
+
+    if (id === "") {
+
+        document.getElementById("mensaje").innerHTML =
+            "Introduce el ID de la película";
+
+        return;
     }
-    if (!actorValido(req.body)) {
-        return res.status(400).json({ error: "Envía nombreCompleto y anioNacimiento como un entero positivo." });
+
+
+    try {
+
+        // Petición DELETE
+        const respuesta = await fetch(
+            API + "/peliculas/" + id,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+        // DELETE devuelve un texto
+        const mensaje = await respuesta.text();
+
+
+        // Mostramos el mensaje que devuelve la API
+        document.getElementById("mensaje").innerHTML = mensaje;
+
+    } catch (error) {
+
+        document.getElementById("mensaje").innerHTML =
+            "Error al conectar con la API";
+
+        console.log(error);
     }
-    actores[posicion].nombreCompleto = req.body.nombreCompleto.trim();
-    actores[posicion].anioNacimiento = req.body.anioNacimiento;
-    guardar("actores.json", actores);
-    res.json(actores[posicion]);
+
 });
 
-// Respuesta para rutas que no existen.
-app.use(function (req, res) {
-    res.status(404).json({ error: "Ruta no encontrada." });
-});
 
-// Express envía aquí los errores de JSON y de lectura/escritura.
-app.use(function (error, req, res, next) {
-    console.error(error.message);
-    if (error.status >= 400 && error.status < 500) {
-        return res.status(error.status).json({ error: "La petición no es válida. Revisa el JSON y su tamaño." });
+
+// ==================================================
+// CREAR UN ACTOR
+// POST /actores
+// ==================================================
+
+document.getElementById("crearActor").addEventListener("click", async function () {
+
+    // Recogemos los datos escritos
+    const id = document.getElementById("actorId").value;
+    const nombre = document.getElementById("actorNombre").value;
+    const ano = document.getElementById("actorAno").value;
+
+
+    // Creamos el objeto actor
+    const actor = {
+        id: Number(id),
+        nombreCompleto: nombre,
+        anoNacimiento: Number(ano)
+    };
+
+
+    try {
+
+        // Enviamos el actor mediante POST
+        const respuesta = await fetch(
+            API + "/actores",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(actor)
+            }
+        );
+
+
+        if (respuesta.ok) {
+
+            const datos = await respuesta.json();
+
+            document.getElementById("mensaje").innerHTML =
+                "Actor creado correctamente: " + datos.nombreCompleto;
+
+        } else {
+
+            const error = await respuesta.text();
+
+            document.getElementById("mensaje").innerHTML = error;
+        }
+
+    } catch (error) {
+
+        document.getElementById("mensaje").innerHTML =
+            "Error al conectar con la API";
+
+        console.log(error);
     }
-    res.status(500).json({ error: "No se pudieron leer o guardar los datos del servidor." });
+
 });
 
-app.listen(3000, "127.0.0.1", function () {
-    console.log("API disponible en http://127.0.0.1:3000");
+
+
+// ==================================================
+// MODIFICAR UN ACTOR
+// PUT /actores/:id
+// ==================================================
+
+document.getElementById("modificarActor").addEventListener("click", async function () {
+
+    // ID del actor que queremos modificar
+    const id = document.getElementById("modificarActorId").value;
+
+
+    // Nuevos datos
+    const nombre = document.getElementById("modificarActorNombre").value;
+    const ano = document.getElementById("modificarActorAno").value;
+
+
+    // Objeto donde guardaremos los cambios
+    const cambios = {};
+
+
+    // Solamente enviamos los campos que estén escritos
+
+    if (nombre !== "") {
+        cambios.nombreCompleto = nombre;
+    }
+
+
+    if (ano !== "") {
+        cambios.anoNacimiento = Number(ano);
+    }
+
+
+    try {
+
+        // Enviamos la modificación mediante PUT
+        const respuesta = await fetch(
+            API + "/actores/" + id,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(cambios)
+            }
+        );
+
+
+        if (respuesta.ok) {
+
+            const actor = await respuesta.json();
+
+            document.getElementById("mensaje").innerHTML =
+                "Actor modificado correctamente: " + actor.nombreCompleto;
+
+        } else {
+
+            const error = await respuesta.text();
+
+            document.getElementById("mensaje").innerHTML = error;
+        }
+
+    } catch (error) {
+
+        document.getElementById("mensaje").innerHTML =
+            "Error al conectar con la API";
+
+        console.log(error);
+    }
+
+});
+
+
+
+// ==================================================
+// BORRAR UN ACTOR
+// DELETE /actores/:id
+// ==================================================
+
+document.getElementById("borrarActor").addEventListener("click", async function () {
+
+    // Cogemos el ID del actor
+    const id = document.getElementById("borrarActorId").value;
+
+
+    if (id === "") {
+
+        document.getElementById("mensaje").innerHTML =
+            "Introduce el ID del actor";
+
+        return;
+    }
+
+
+    try {
+
+        // Hacemos la petición DELETE
+        const respuesta = await fetch(
+            API + "/actores/" + id,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+        // La API devuelve un mensaje de texto
+        const mensaje = await respuesta.text();
+
+
+        document.getElementById("mensaje").innerHTML = mensaje;
+
+    } catch (error) {
+
+        document.getElementById("mensaje").innerHTML =
+            "Error al conectar con la API";
+
+        console.log(error);
+    }
+
 });
