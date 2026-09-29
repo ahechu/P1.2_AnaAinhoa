@@ -1,20 +1,13 @@
 // Dirección donde está funcionando nuestra API
 const API = "http://localhost:3000";
 
-
 // ==================================================
 // BUSCAR UNA PELÍCULA POR NOMBRE
 // GET /peliculas?nombre=Titanic
 // ==================================================
-
 document.getElementById("buscarPelicula").addEventListener("click", async function () {
-
-    // Cogemos el nombre escrito en el input
-    const nombre = document.getElementById("buscarNombre").value;
-
-    // Lugar donde vamos a mostrar el resultado
-    const resultado = document.getElementById("resultado");
-
+    const nombre = document.getElementById("buscarNombre").value;   // Cogemos el nombre escrito en el input
+    const resultado = document.getElementById("resultado");         // Lugar donde vamos a mostrar el resultado
 
     // Comprobamos que el usuario haya escrito algo
     if (nombre === "") {
@@ -22,140 +15,83 @@ document.getElementById("buscarPelicula").addEventListener("click", async functi
         return;
     }
 
-
     try {
-
         // Hacemos la petición GET a nuestra API
         const respuesta = await fetch(
-            API + "/peliculas?nombre=" + encodeURIComponent(nombre)
+            API + "/peliculas?nombre=" + encodeURIComponent(nombre) //Codifica el texto para que pueda viajar correctamente dentro de la URL.
         );
-
 
         // Si la respuesta es correcta
         if (respuesta.ok) {
-
-            // Convertimos la respuesta JSON a Javascript
-            const pelicula = await respuesta.json();
-
-
-            // Mostramos los datos de la película
-            resultado.innerHTML =
+            const pelicula = await respuesta.json();        // Convertimos la respuesta JSON a Javascript
+            resultado.innerHTML =                           // Mostramos los datos de la película
                 "<h3>" + pelicula.nombre + "</h3>" +
                 "<p>ID: " + pelicula.id + "</p>" +
-                "<p>Año: " + pelicula.anoPublicacion + "</p>" +
+                "<p>Año: " + pelicula.ano + "</p>" +
                 "<p>Actores: " + pelicula.actores.join(", ") + "</p>";
-
         } else {
-
-            // Si la película no existe, la API nos devuelve un texto
-            const error = await respuesta.text();
-
+            const error = await respuesta.text();           // Si la película no existe, la API nos devuelve un texto
             resultado.innerHTML = error;
         }
-
     } catch (error) {
-
         resultado.innerHTML = "Error al conectar con la API";
-
         console.log(error);
     }
-
 });
-
-
 
 // ==================================================
 // CREAR UNA PELÍCULA
 // POST /peliculas
 // ==================================================
-
 document.getElementById("crearPelicula").addEventListener("click", async function () {
-
-    // Cogemos los valores escritos en los inputs
-    const id = document.getElementById("peliculaId").value;
-    const nombre = document.getElementById("peliculaNombre").value;
+    const nombre = document.getElementById("peliculaNombre").value;     // Cogemos los valores escritos en los inputs
     const ano = document.getElementById("peliculaAno").value;
-
-    // Los actores se escriben así:
-    // 1,2,3
+    //Para los actores es diferente
     const textoActores = document.getElementById("peliculaActores").value;
-
-
-    // Creamos inicialmente un array vacío
-    let actores = [];
-
-
-    // Si se han escrito actores, los separamos por las comas
-    if (textoActores !== "") {
-
+    let actores = [];                           // Creamos un array vacío
+    if (textoActores !== "") {                  // Si se han escrito actores, los separamos por las comas
         actores = textoActores.split(",");
-
-        // Convertimos cada ID de texto a número
-        actores = actores.map(function (actor) {
-            return Number(actor.trim());
+        actores = actores.map(function (actor) {    //Recorre todos los actores y quita los espacios.
+            return actor.trim();
         });
     }
-
 
     // Creamos el objeto que enviaremos a la API
     const pelicula = {
-        id: Number(id),
         nombre: nombre,
-        anoPublicacion: Number(ano),
+        ano: Number(ano),
         actores: actores
     };
 
-
     try {
-
-        // Hacemos la petición POST
-        const respuesta = await fetch(API + "/peliculas", {
-
+        const respuesta = await fetch(API + "/peliculas", {         // Hacemos la petición POST
             method: "POST",
-
-            // Indicamos que enviamos JSON
-            headers: {
+            headers: {                                              // Avisamos al servidor de que el body está en formato JSON
                 "Content-Type": "application/json"
             },
-
-            // Convertimos nuestro objeto Javascript a JSON
-            body: JSON.stringify(pelicula)
+            body: JSON.stringify(pelicula)                          // Convertimos el objeto a JSON para enviarlo
         });
 
-
         if (respuesta.ok) {
-
-            const datos = await respuesta.json();
-
+            const datos = await respuesta.json();                   // Convertimos el JSON recibido del servidor en un objeto Javascript
             document.getElementById("mensaje").innerHTML =
-                "Película creada correctamente: " + datos.nombre;
-
+                "Película creada correctamente: " + datos.nombre + "(ID:" + datos.id + ")";     // La API nos devuelve también el ID que ha generado
         } else {
-
             const error = await respuesta.text();
-
             document.getElementById("mensaje").innerHTML = error;
         }
-
     } catch (error) {
-
         document.getElementById("mensaje").innerHTML =
             "Error al conectar con la API";
-
         console.log(error);
     }
-
 });
-
-
 
 // ==================================================
 // MODIFICAR UNA PELÍCULA
 // PUT /peliculas/:id
 // ==================================================
-
 document.getElementById("modificarPelicula").addEventListener("click", async function () {
-
     // ID de la película que queremos modificar
     const id = document.getElementById("modificarPeliculaId").value;
 
@@ -179,7 +115,7 @@ document.getElementById("modificarPelicula").addEventListener("click", async fun
 
 
     if (ano !== "") {
-        cambios.anoPublicacion = Number(ano);
+        cambios.ano = Number(ano);
     }
 
 
@@ -217,7 +153,7 @@ document.getElementById("modificarPelicula").addEventListener("click", async fun
             const pelicula = await respuesta.json();
 
             document.getElementById("mensaje").innerHTML =
-                "Película modificada correctamente: " + pelicula.nombre;
+                "Película modificada correctamente: " + pelicula.nombre + "(ID:" + pelicula.id + ")";
 
         } else {
 
@@ -331,7 +267,7 @@ document.getElementById("crearActor").addEventListener("click", async function (
             const datos = await respuesta.json();
 
             document.getElementById("mensaje").innerHTML =
-                "Actor creado correctamente: " + datos.nombreCompleto;
+                "Actor creado correctamente: " + datos.nombreCompleto + " (ID: " + datos.id + ")";
 
         } else {
 
@@ -406,7 +342,7 @@ document.getElementById("modificarActor").addEventListener("click", async functi
             const actor = await respuesta.json();
 
             document.getElementById("mensaje").innerHTML =
-                "Actor modificado correctamente: " + actor.nombreCompleto;
+                "Actor modificado correctamente: " + actor.nombreCompleto + " (ID: " + actor.id + ")";
 
         } else {
 
