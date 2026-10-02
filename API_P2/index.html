@@ -2,299 +2,249 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PelisToday2</title>
     <link rel="stylesheet" href="estilo.css">
     <script src="script.js" defer></script>
 </head>
 
 <body>
-    <h1>PelisToday2</h1>
 
-    <!-- ========================================== -->
-    <!-- BUSCAR PELÍCULA -->
-    <!-- ========================================== -->
+    <main class="contenedor">
 
-    <h2>Buscar película</h2>
+        <h1>PelisToday2</h1>
 
-    <label for="buscarNombre">Título de la película:</label>
+        <!-- BUSCAR PELÍCULA -->
+        <section class="bloque">
 
-    <input
-        type="text"
-        id="buscarNombre"
-        placeholder="Ejemplo: Titanic"
-    >
+            <h2>Buscar película</h2>
 
-    <button type="button" id="buscarPelicula">
-        Buscar
-    </button>
+            <label for="buscarNombre">
+                Título de la película:
+            </label>
 
+            <input
+                type="text"
+                id="buscarNombre"
+                placeholder="Ejemplo: Titanic"
+            >
 
-    <!-- Aquí mostraremos el resultado de la búsqueda -->
-    <div id="resultado"></div>
+            <button type="button" id="buscarPelicula">
+                Buscar
+            </button>
 
+            <div id="resultado"></div>
 
+        </section>
 
-    <hr>
+        <!-- CREAR PELÍCULA -->
+        <section class="bloque">
 
+            <h2>Crear película</h2>
 
+            <label for="peliculaNombre">
+                Nombre:
+            </label>
 
-    <!-- ========================================== -->
-    <!-- CREAR PELÍCULA -->
-    <!-- ========================================== -->
+            <input
+                type="text"
+                id="peliculaNombre"
+                placeholder="Ejemplo: Titanic"
+            >
 
-    <h2>Crear película</h2>
+            <label for="peliculaAno">
+                Año de publicación:
+            </label>
 
-    <label for="peliculaId">ID:</label>
+            <input
+                type="number"
+                id="peliculaAno"
+                placeholder="Ejemplo: 1997"
+            >
 
-    <input
-        type="number"
-        id="peliculaId"
-        placeholder="Ejemplo: 1"
-    >
+            <label for="peliculaActores">
+                Actores:
+            </label>
 
+            <input
+                type="text"
+                id="peliculaActores"
+                placeholder="Ejemplo: Leonardo DiCaprio, Kate Winslet, Billy Zane"
+            >
 
-    <label for="peliculaNombre">Nombre:</label>
+            <button type="button" id="crearPelicula">
+                Crear película
+            </button>
 
-    <input
-        type="text"
-        id="peliculaNombre"
-        placeholder="Ejemplo: Titanic"
-    >
+        </section>
 
+        <!-- MODIFICAR PELÍCULA -->
+        <section class="bloque">
 
-    <label for="peliculaAno">Año de publicación:</label>
+            <h2>Modificar película</h2>
 
-    <input
-        type="number"
-        id="peliculaAno"
-        placeholder="Ejemplo: 1997"
-    >
+            <label for="modificarPeliculaId">
+                ID de la película:
+            </label>
 
+            <input
+                type="number"
+                id="modificarPeliculaId"
+                placeholder="Ejemplo: 1"
+            >
 
-    <label for="peliculaActores">IDs de los actores:</label>
+            <label for="modificarPeliculaNombre">
+                Nuevo nombre:
+            </label>
 
-    <input
-        type="text"
-        id="peliculaActores"
-        placeholder="Ejemplo: 1,2,3"
-    >
+            <input
+                type="text"
+                id="modificarPeliculaNombre"
+                placeholder="Nuevo nombre"
+            >
 
+            <label for="modificarPeliculaAno">
+                Nuevo año:
+            </label>
 
-    <button type="button" id="crearPelicula">
-        Crear película
-    </button>
+            <input
+                type="number"
+                id="modificarPeliculaAno"
+                placeholder="Nuevo año"
+            >
 
+            <label for="modificarPeliculaActores">
+                Nuevos actores:
+            </label>
 
+            <input
+                type="text"
+                id="modificarPeliculaActores"
+                placeholder="Ejemplo: Leonardo DiCaprio, Kate Winslet"
+            >
 
-    <hr>
+            <button type="button" id="modificarPelicula">
+                Modificar película
+            </button>
 
+        </section>
 
+        <!-- BORRAR PELÍCULA -->
+        <section class="bloque">
 
-    <!-- ========================================== -->
-    <!-- MODIFICAR PELÍCULA -->
-    <!-- ========================================== -->
+            <h2>Borrar película</h2>
 
-    <h2>Modificar película</h2>
+            <label for="borrarPeliculaNombre">
+                Nombre de la película:
+            </label>
 
+            <input
+                type="text"
+                id="borrarPeliculaNombre"
+                placeholder="Ejemplo: Titanic"
+            >
 
-    <!-- El ID sirve para indicar qué película queremos modificar -->
-    <label for="modificarPeliculaId">
-        ID de la película:
-    </label>
+            <button type="button" id="borrarPelicula">
+                Borrar película
+            </button>
 
-    <input
-        type="number"
-        id="modificarPeliculaId"
-        placeholder="Ejemplo: 1"
-    >
+        </section>
 
+        <!-- CREAR ACTOR -->
+        <section class="bloque">
 
-    <!-- Los siguientes campos son los nuevos valores -->
+            <h2>Crear actor</h2>
 
-    <label for="modificarPeliculaNombre">
-        Nuevo nombre:
-    </label>
+            <label for="actorNombre">
+                Nombre completo:
+            </label>
 
-    <input
-        type="text"
-        id="modificarPeliculaNombre"
-        placeholder="Nuevo nombre"
-    >
+            <input
+                type="text"
+                id="actorNombre"
+                placeholder="Ejemplo: Leonardo DiCaprio"
+            >
 
+            <label for="actorFecha">
+                Fecha de nacimiento:
+            </label>
 
-    <label for="modificarPeliculaAno">
-        Nuevo año:
-    </label>
+            <input
+                type="date"
+                id="actorFecha"
+            >
 
-    <input
-        type="number"
-        id="modificarPeliculaAno"
-        placeholder="Nuevo año"
-    >
+            <button type="button" id="crearActor">
+                Crear actor
+            </button>
 
+        </section>
 
-    <label for="modificarPeliculaActores">
-        Nuevos actores:
-    </label>
+        <!-- MODIFICAR ACTOR -->
+        <section class="bloque">
 
-    <input
-        type="text"
-        id="modificarPeliculaActores"
-        placeholder="Ejemplo: 1,2,4"
-    >
+            <h2>Modificar actor</h2>
 
+            <label for="modificarActorId">
+                ID del actor:
+            </label>
 
-    <button type="button" id="modificarPelicula">
-        Modificar película
-    </button>
+            <input
+                type="number"
+                id="modificarActorId"
+                placeholder="Ejemplo: 1"
+            >
 
+            <label for="modificarActorNombre">
+                Nuevo nombre:
+            </label>
 
+            <input
+                type="text"
+                id="modificarActorNombre"
+                placeholder="Nuevo nombre"
+            >
 
-    <hr>
+            <label for="modificarActorFecha">
+                Nueva fecha de nacimiento:
+            </label>
 
+            <input
+                type="date"
+                id="modificarActorFecha"
+            >
 
-    <!-- ========================================== -->
-    <!-- BORRAR PELÍCULA -->
-    <!-- ========================================== -->
+            <button type="button" id="modificarActor">
+                Modificar actor
+            </button>
 
-    <h2>Borrar película</h2>
+        </section>
 
-    <label for="borrarPeliculaNombre">
-        Nombre de la película:
-    </label>
+        <!-- BORRAR ACTOR -->
+        <section class="bloque">
 
-    <input
-        type="text"
-        id="borrarPeliculaNombre"
-    >
+            <h2>Borrar actor</h2>
 
-    <button type="button" id="borrarPelicula">
-        Borrar película
-    </button>
+            <label for="borrarActorNombre">
+                Nombre del actor:
+            </label>
 
-    <!-- ========================================== -->
-    <!-- CREAR ACTOR -->
-    <!-- ========================================== -->
+            <input
+                type="text"
+                id="borrarActorNombre"
+                placeholder="Ejemplo: Leonardo DiCaprio"
+            >
 
-    <h2>Crear actor</h2>
+            <button type="button" id="borrarActor">
+                Borrar actor
+            </button>
 
+        </section>
 
-    <label for="actorId">ID:</label>
+        <!-- MENSAJES DE LAS OPERACIONES -->
+        <div id="mensaje"></div>
 
-    <input
-        type="number"
-        id="actorId"
-        placeholder="Ejemplo: 1"
-    >
-
-
-    <label for="actorNombre">
-        Nombre completo:
-    </label>
-
-    <input
-        type="text"
-        id="actorNombre"
-        placeholder="Ejemplo: Leonardo DiCaprio"
-    >
-
-
-    <label for="actorAno">
-        Año de nacimiento:
-    </label>
-
-    <input
-        type="number"
-        id="actorAno"
-        placeholder="Ejemplo: 1974"
-    >
-
-
-    <button type="button" id="crearActor">
-        Crear actor
-    </button>
-
-
-
-    <hr>
-
-
-
-    <!-- ========================================== -->
-    <!-- MODIFICAR ACTOR -->
-    <!-- ========================================== -->
-
-    <h2>Modificar actor</h2>
-
-
-    <!-- ID del actor que queremos modificar -->
-    <label for="modificarActorId">
-        ID del actor:
-    </label>
-
-    <input
-        type="number"
-        id="modificarActorId"
-        placeholder="Ejemplo: 1"
-    >
-
-
-    <label for="modificarActorNombre">
-        Nuevo nombre:
-    </label>
-
-    <input
-        type="text"
-        id="modificarActorNombre"
-        placeholder="Nuevo nombre"
-    >
-
-
-    <label for="modificarActorAno">
-        Nuevo año de nacimiento:
-    </label>
-
-    <input
-        type="number"
-        id="modificarActorAno"
-        placeholder="Nuevo año"
-    >
-
-
-    <button type="button" id="modificarActor">
-        Modificar actor
-    </button>
-
-
-
-    <hr>
-
-
-
-    <!-- ========================================== -->
-    <!-- BORRAR ACTOR -->
-    <!-- ========================================== -->
-
-    <h2>Borrar actor</h2>
-
-    <label for="borrarActorNombre">
-        Nombre del actor:
-    </label>
-
-    <input
-        type="text"
-        id="borrarActorNombre"
-    >
-
-    <button type="button" id="borrarActor">
-        Borrar actor
-    </button>
-
-
-    <!-- Aquí podemos mostrar mensajes de las operaciones -->
-    <div id="mensaje"></div>
-
+    </main>
 
 </body>
-
 </html>

@@ -109,13 +109,13 @@ app.put("/peliculas/:id", function (req, res) {
 
 // BORRAR UNA PELÍCULA ==================================================
 // DELETE /peliculas/1
-app.delete("/peliculas/:id", function (req, res) {
+app.delete("/peliculas/:nombre", function (req, res) {
     const datos = leerDatos(archivoPeliculas);
     const peliculas = datos.peliculas;
-    const id = Number(req.params.id);
+    const nombre = req.params.nombre;                 // Recogemos el nombre de la película que queremos borrar
 
     const posicion = peliculas.findIndex(function (pelicula) {
-        return pelicula.id === id;
+        return pelicula.nombre.toLowerCase() === nombre.toLowerCase();
     });
     if (posicion === -1) {
         return res.status(404).send(
@@ -190,13 +190,13 @@ app.put("/actores/:id", function (req, res) {
 
 // BORRAR UN ACTOR ==================================================
 // DELETE /actores/1
-app.delete("/actores/:id", function (req, res) {
+app.delete("/actores/:nombre", function (req, res) {
     const datos = leerDatos(archivoActores);
     const actores = datos.actores;
-    const id = Number(req.params.id);
+    const nombre = req.params.nombre;
 
     const posicion = actores.findIndex(function (actor) {
-        return actor.id === id;
+        return actor.nombre.toLowerCase() === nombre.toLowerCase();
     });
 
     if (posicion === -1) {

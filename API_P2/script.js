@@ -95,7 +95,7 @@ document.getElementById("modificarPelicula").addEventListener("click", async fun
     if (textoActores !== "") {
         let actores = textoActores.split(",");
         actores = actores.map(function (actor) {
-            return Number(actor.trim());
+            return actor.trim();
         });
         cambios.actores = actores;
     }
@@ -155,13 +155,11 @@ document.getElementById("borrarPelicula").addEventListener("click", async functi
 // POST Crear un actor /actores
 
 document.getElementById("crearActor").addEventListener("click", async function () {
-    const id = document.getElementById("actorId").value;
     const nombre = document.getElementById("actorNombre").value;
-    const ano = document.getElementById("actorAno").value;
+    const fecha = document.getElementById("actorFecha").value;
     const actor = { // Creamos un objeto actor con los datos del formulario
-        id: Number(id),
-        nombreCompleto: nombre,
-        anoNacimiento: Number(ano)
+        nombre: nombre,
+        fecha_nacimiento: fecha
     };
 
     try {
@@ -178,7 +176,7 @@ document.getElementById("crearActor").addEventListener("click", async function (
         if (respuesta.ok) {
             const datos = await respuesta.json();
             document.getElementById("mensaje").innerHTML =
-                "Actor creado : " + datos.nombreCompleto + " (ID: " + datos.id + ")";
+                "Actor creado : " + datos.nombre + " (ID: " + datos.id + ")";
         } else {
             const error = await respuesta.text();
             document.getElementById("mensaje").innerHTML = error;
@@ -195,15 +193,15 @@ document.getElementById("crearActor").addEventListener("click", async function (
 document.getElementById("modificarActor").addEventListener("click", async function () {
     const id = document.getElementById("modificarActorId").value;
     const nombre = document.getElementById("modificarActorNombre").value;
-    const ano = document.getElementById("modificarActorAno").value;
+    const fecha = document.getElementById("modificarActorFecha").value;
     const cambios = {};
 
     if (nombre !== "") {
-        cambios.nombreCompleto = nombre;
+        cambios.nombre = nombre;
     }
 
-    if (ano !== "") {
-        cambios.anoNacimiento = Number(ano);
+    if (fecha !== "") {
+        cambios.fecha_nacimiento = fecha;
     }
 
     try {
@@ -220,7 +218,7 @@ document.getElementById("modificarActor").addEventListener("click", async functi
         if (respuesta.ok) {
             const actor = await respuesta.json();
             document.getElementById("mensaje").innerHTML =
-                "Actor modificado : " + actor.nombreCompleto + " (ID: " + actor.id + ")";
+                "Actor modificado : " + actor.nombre + " (ID: " + actor.id + ")";
         } else {
             const error = await respuesta.text();
             document.getElementById("mensaje").innerHTML = error;
